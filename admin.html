@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>지휘통제절차 | 관리자</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23dc2626'/%3E%3Cpath d='M32 8c0 0-14 16-14 28a14 14 0 0 0 28 0C46 24 32 8 32 8zm0 38a10 10 0 0 1-10-10c0-4 2-9 5-14 1.5 3 3 5.5 3 8a2 2 0 0 0 4 0c0-2.5 1.5-5 3-8 3 5 5 10 5 14a10 10 0 0 1-10 10z' fill='white'/%3E%3C/svg%3E">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/pretendard/1.3.9/variable/pretendardvariable.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+<style>
+:root{--fire-600:#dc2626;--fire-500:#ef4444;--navy-900:#0c1222;--navy-800:#111827;--navy-700:#1a2332;--navy-400:#4b5563;--navy-300:#6b7280;--slate-50:#f8fafc;--slate-100:#f1f5f9;--slate-200:#e2e8f0;--emerald-600:#059669;--blue-600:#2563eb;--amber-500:#f59e0b;--white:#fff}
+*{margin:0;padding:0;box-sizing:border-box}body{font-family:'Pretendard Variable',-apple-system,sans-serif;background:#f0f2f5;color:var(--navy-800);min-height:100vh}
+.header{position:fixed;top:0;left:0;right:0;height:52px;background:linear-gradient(135deg,var(--navy-900),var(--navy-700));display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:100}.header h1{font-size:14px;color:#fff;display:flex;align-items:center;gap:8px}.header h1 i{color:var(--fire-500)}.btn-h{padding:6px 12px;border:1px solid rgba(255,255,255,.3);background:transparent;color:#fff;border-radius:7px;font-size:11px;cursor:pointer;font-family:inherit;text-decoration:none;display:flex;align-items:center;gap:5px}.btn-h:hover{background:rgba(255,255,255,.1)}.header-right{display:flex;gap:8px;align-items:center}
+.main{margin-top:52px;max-width:1100px;margin-left:auto;margin-right:auto;padding:20px 20px 52px}
+.stats-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:24px}.stat-card{background:#fff;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.04)}.stat-label{font-size:11px;font-weight:600;color:var(--navy-300);margin-bottom:4px}.stat-value{font-size:24px;font-weight:700}.stat-sub{font-size:10px;color:var(--navy-300);margin-top:3px}
+.section{background:#fff;border-radius:12px;padding:20px;box-shadow:0 1px 4px rgba(0,0,0,.04);margin-bottom:16px}.section h2{font-size:15px;font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:6px}.section h2 i{font-size:14px;color:var(--navy-300)}
+.tool-row{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+.tab-btn{padding:7px 14px;border:none;background:transparent;font-size:12px;font-weight:600;color:var(--navy-300);cursor:pointer;font-family:inherit;border-bottom:2px solid transparent;transition:.2s}.tab-btn.active{color:var(--fire-600);border-bottom-color:var(--fire-600)}.tab-btn:hover:not(.active){color:var(--navy-800)}
+.chip{padding:4px 12px;border-radius:7px;border:1px solid var(--slate-200);background:#fff;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--navy-400)}.chip.active{background:var(--navy-800);color:#fff;border-color:var(--navy-800)}
+.ppg{padding:5px 10px;border:1px solid var(--slate-200);border-radius:7px;font-size:11px;font-family:inherit;background:#fff;color:var(--navy-400)}
+table{width:100%;border-collapse:collapse;font-size:12px}th{text-align:left;padding:8px 10px;border-bottom:2px solid var(--slate-200);font-weight:700;color:var(--navy-400);font-size:10px}td{padding:8px 10px;border-bottom:1px solid var(--slate-100)}tr:hover td{background:var(--slate-50)}
+.avatar-sm{width:24px;height:24px;border-radius:50%;object-fit:cover}
+.badge{display:inline-flex;align-items:center;padding:2px 8px;border-radius:5px;font-size:10px;font-weight:600}.badge-admin{background:linear-gradient(135deg,#f59e0b,#ea580c);color:#fff}.badge-member{background:var(--slate-100);color:var(--navy-400)}.badge-blocked{background:#fecaca;color:#991b1b}
+.btn-sm{padding:4px 10px;border:1px solid var(--slate-200);border-radius:6px;background:#fff;font-size:11px;font-weight:500;cursor:pointer;font-family:inherit}.btn-sm:hover{background:var(--slate-50)}.btn-sm.danger{border-color:#fca5a5;color:#dc2626}.btn-sm.success{border-color:#86efac;color:#059669}
+.pg-row{display:flex;justify-content:center;align-items:center;gap:4px;margin-top:12px}.pg-b{width:28px;height:28px;border:1px solid var(--slate-200);border-radius:6px;background:#fff;font-size:11px;font-weight:600;color:var(--navy-400);cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:inherit}.pg-b:hover{background:var(--slate-50)}.pg-b.active{background:var(--navy-800);color:#fff;border-color:var(--navy-800)}.pg-i{font-size:10px;color:var(--navy-300);margin:0 6px}
+.login-wall{display:flex;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:300;align-items:center;justify-content:center}.login-box{background:#fff;border-radius:16px;padding:36px;max-width:380px;width:100%;text-align:center}.login-box h2{font-size:18px;font-weight:700;margin-bottom:6px}.login-box p{font-size:13px;color:var(--navy-300);margin-bottom:16px}.btn-google{width:100%;padding:12px;border:2px solid var(--slate-200);border-radius:10px;background:#fff;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;justify-content:center;gap:8px}.btn-google img{width:18px}
+.denied{text-align:center;padding:80px 20px}.denied i{font-size:56px;color:#fca5a5;margin-bottom:12px}.denied h2{font-size:20px;margin-bottom:6px}.denied p{color:var(--navy-300);font-size:13px}
+.site-footer{position:fixed;bottom:0;left:0;right:0;height:28px;background:linear-gradient(135deg,#0c1222,#1a2332);display:flex;align-items:center;justify-content:space-between;padding:0 20px;z-index:100}.site-footer span{font-size:9px;color:rgba(255,255,255,.5)}.site-footer .footer-left{font-style:italic}
+@media(max-width:768px){.stats-grid{grid-template-columns:1fr 1fr}.main{padding:14px 14px 48px}th,td{padding:6px 5px}table{font-size:11px}}
+</style>
+</head>
+<body>
+<header class="header"><h1><i class="fas fa-shield-alt"></i> 관리자 대시보드</h1><div class="header-right"><a href="./analys.html" class="btn-h"><i class="fas fa-chart-bar"></i> 분석</a><a href="./manual.html" class="btn-h" target="_blank"><i class="fas fa-file-alt"></i> 개발매뉴얼</a><a href="./board.html" class="btn-h"><i class="fas fa-comments"></i> 커뮤니티</a><a href="./index.html" class="btn-h"><i class="fas fa-book-open"></i> 교안</a></div></header>
+<div class="login-wall" id="loginWall"><div class="login-box"><h2><i class="fas fa-shield-alt" style="color:var(--fire-600)"></i> 관리자 인증</h2><p>관리자 Google 계정으로 로그인</p><button class="btn-google" onclick="doGL()"><img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"> Google 로그인</button></div></div>
+<div class="denied" id="denied" style="display:none"><i class="fas fa-ban"></i><h2>접근 권한 없음</h2><p>관리자 계정만 접근 가능합니다</p><br><a href="./board.html" style="color:var(--blue-600)">커뮤니티로 돌아가기</a></div>
+<div class="main" id="mainC" style="display:none">
+<div class="stats-grid" id="statsG"></div>
+<div class="section"><h2><i class="fas fa-chart-line"></i> 접속 기록</h2>
+<div class="tool-row"><button class="tab-btn active" onclick="setLT('today',this)">오늘</button><button class="tab-btn" onclick="setLT('week',this)">7일</button><button class="tab-btn" onclick="setLT('all',this)">전체</button><span style="width:1px;height:20px;background:var(--slate-200);margin:0 4px"></span><button class="chip active" onclick="setPF('all',this)">전체</button><button class="chip" onclick="setPF('index',this)">교안</button><button class="chip" onclick="setPF('board',this)">게시판</button><span style="flex:1"></span><select class="ppg" onchange="logPPG=this.value==='all'?9999:+this.value;logPage=1;renLog()"><option value="10">10개</option><option value="20">20개</option><option value="30">30개</option><option value="all">전체</option></select></div>
+<table><thead><tr><th>시간</th><th>사용자</th><th>이메일</th><th>IP</th><th>페이지</th></tr></thead><tbody id="logB"></tbody></table>
+<div class="pg-row" id="logPg"></div></div>
+<div class="section"><h2><i class="fas fa-users"></i> 사용자 통계</h2>
+<div class="tool-row"><span style="flex:1"></span><select class="ppg" onchange="userPPG=this.value==='all'?9999:+this.value;userPage=1;renUsers()"><option value="10">10개</option><option value="20">20개</option><option value="30">30개</option><option value="all">전체</option></select></div>
+<table><thead><tr><th></th><th>이름</th><th>이메일</th><th>방문</th><th>게시글</th><th>상태</th><th>관리</th></tr></thead><tbody id="userB"></tbody></table>
+<div class="pg-row" id="userPg"></div></div>
+<div class="section"><h2><i class="fas fa-robot"></i> 챗봇 사용 현황</h2>
+<div class="tool-row">
+  <button class="tab-btn chat-tab-btn active" onclick="setCT('today',this)">오늘</button>
+  <button class="tab-btn chat-tab-btn" onclick="setCT('week',this)">7일</button>
+  <button class="tab-btn chat-tab-btn" onclick="setCT('all',this)">전체</button>
+  <span style="flex:1"></span>
+  <select class="ppg" onchange="chatPPG=this.value==='all'?9999:+this.value;chatPage=1;renChat()"><option value="10">10개</option><option value="20">20개</option><option value="all">전체</option></select>
+</div>
+<table><thead><tr><th>시간</th><th>사용자</th><th>이메일</th><th>질문 요약</th><th>토큰</th></tr></thead><tbody id="chatB"></tbody></table>
+<div class="pg-row" id="chatPg"></div></div>
+
+<div class="section"><h2><i class="fas fa-ban"></i> 차단 사용자</h2>
+<div class="tool-row"><span style="flex:1"></span><select class="ppg" onchange="blkPPG=this.value==='all'?9999:+this.value;blkPage=1;renBlocked()"><option value="10">10개</option><option value="20">20개</option><option value="30">30개</option><option value="all">전체</option></select></div>
+<table><thead><tr><th>이메일</th><th>이름</th><th>차단일</th><th>사유</th><th>관리</th></tr></thead><tbody id="blockB"></tbody></table>
+<div class="pg-row" id="blkPg"></div>
+<div id="blockE" style="text-align:center;padding:16px;color:#999;font-size:12px">차단된 사용자 없음</div></div>
+</div>
+<footer class="site-footer"><span class="footer-left">체계적인 현장활동으로 대한민국이 안전해지는 그날까지</span><span class="footer-right">&copy; 2026 부산지휘역량강화센터</span></footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var SB_URL='https://ubnasdhkdezwyppfwowc.supabase.co';
+var SB_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVibmFzZGhrZGV6d3lwcGZ3b3djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNjQxODksImV4cCI6MjA4OTY0MDE4OX0.3O_4iCvpoxSjHjFx0TcqpwqhmAw4iAwmCkTurK35F-Q';
+var ADM='jkseo1974@gmail.com';
+var sb=window.supabase.createClient(SB_URL,SB_KEY);
+var logTab='today',pFilter='all',allLogs=[],logPPG=10,logPage=1;
+var allUsers=[],userPPG=10,userPage=1;
+var allBlocked=[],blkPPG=10,blkPage=1;
+
+sb.auth.onAuthStateChange(function(ev,s){
+  if(s&&s.user){var e=s.user.email||'';if(e===ADM){document.getElementById('loginWall').style.display='none';document.getElementById('mainC').style.display='block';loadAll()}else{document.getElementById('loginWall').style.display='none';document.getElementById('denied').style.display='block'}}
+});
+sb.auth.getSession().then(function(r){if(!r.data.session)document.getElementById('loginWall').style.display='flex'});
+function doGL(){sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:location.origin+location.pathname}})}
+
+async function loadAll(){await loadStats();await loadLogs();await loadUsers();await loadBlocked();await loadChat()}
+
+async function loadStats(){
+  var td=new Date().toISOString().slice(0,10);
+  var r1=await sb.from('visit_logs').select('id',{count:'exact',head:true});
+  var r2=await sb.from('visit_logs').select('id',{count:'exact',head:true}).gte('visited_at',td+'T00:00:00');
+  var r3=await sb.from('posts').select('id',{count:'exact',head:true});
+  var r4=await sb.from('comments').select('id',{count:'exact',head:true});
+  var r5=await sb.from('visit_logs').select('email').gte('visited_at',td+'T00:00:00');
+  var uni=new Set((r5.data||[]).map(function(x){return x.email})).size;
+  var r6=await sb.from('blocked_users').select('id',{count:'exact',head:true});
+  var h='<div class="stat-card"><div class="stat-label">오늘 방문</div><div class="stat-value" style="color:var(--blue-600)">'+(r2.count||0)+'</div><div class="stat-sub">순방문자 '+uni+'명</div></div>';
+  h+='<div class="stat-card"><div class="stat-label">전체 방문</div><div class="stat-value">'+(r1.count||0)+'</div></div>';
+  h+='<div class="stat-card"><div class="stat-label">게시글</div><div class="stat-value" style="color:var(--emerald-600)">'+(r3.count||0)+'</div></div>';
+  h+='<div class="stat-card"><div class="stat-label">댓글</div><div class="stat-value" style="color:var(--amber-500)">'+(r4.count||0)+'</div></div>';
+  h+='<div class="stat-card"><div class="stat-label">차단</div><div class="stat-value" style="color:var(--fire-600)">'+(r6.count||0)+'</div></div>';
+  var rc=await sb.from('chat_logs').select('id',{count:'exact',head:true});
+  var rc2=await sb.from('chat_logs').select('id',{count:'exact',head:true}).gte('created_at',td+'T00:00:00');
+  var rt=await sb.from('chat_logs').select('tokens_used');
+  var totalTokens=(rt.data||[]).reduce(function(s,x){return s+(x.tokens_used||0)},0);
+  h+='<div class="stat-card"><div class="stat-label">챗봇 오늘</div><div class="stat-value" style="color:#8b5cf6">'+(rc2.count||0)+'</div><div class="stat-sub">전체 '+(rc.count||0)+'회</div></div>';
+  h+='<div class="stat-card"><div class="stat-label">총 토큰</div><div class="stat-value" style="color:#0891b2">'+totalTokens.toLocaleString()+'</div><div class="stat-sub">누적 사용량</div></div>';
+  document.getElementById('statsG').innerHTML=h;
+}
+
+async function loadLogs(){
+  var q=sb.from('visit_logs').select('*').order('visited_at',{ascending:false}).limit(1000);
+  var td=new Date().toISOString().slice(0,10);
+  if(logTab==='today')q=q.gte('visited_at',td+'T00:00:00');
+  else if(logTab==='week'){var d=new Date();d.setDate(d.getDate()-7);q=q.gte('visited_at',d.toISOString())}
+  allLogs=(await q).data||[];logPage=1;renLog();
+}
+function renLog(){
+  var fl=pFilter==='all'?allLogs:allLogs.filter(function(l){return l.page===pFilter});
+  var total=fl.length,tp=Math.max(1,Math.ceil(total/logPPG)),s=(logPage-1)*logPPG,pg=fl.slice(s,s+logPPG);
+  var b=document.getElementById('logB');
+  if(!pg.length){b.innerHTML='<tr><td colspan="5" style="text-align:center;color:#999;padding:20px">기록 없음</td></tr>';document.getElementById('logPg').innerHTML='';return}
+  var h='';pg.forEach(function(l){var d=new Date(l.visited_at);h+='<tr><td>'+d.toLocaleDateString('ko')+' '+d.toLocaleTimeString('ko',{hour:'2-digit',minute:'2-digit'})+'</td><td>'+esc(l.user_name||'-')+'</td><td style="color:var(--navy-300)">'+esc(l.email||'')+'</td><td style="font-size:11px;color:var(--navy-300)">'+esc(l.ip||'-')+'</td><td>'+(l.page==='index'?'<span style="color:var(--blue-600)">교안</span>':'<span style="color:var(--emerald-600)">게시판</span>')+'</td></tr>'});b.innerHTML=h;
+  var ph='';if(tp>1){if(logPage>1)ph+='<button class="pg-b" onclick="logPage--;renLog()"><i class="fas fa-chevron-left"></i></button>';var st=Math.max(1,logPage-2),en=Math.min(tp,logPage+2);for(var i=st;i<=en;i++)ph+='<button class="pg-b'+(i===logPage?' active':'')+'" onclick="logPage='+i+';renLog()">'+i+'</button>';if(logPage<tp)ph+='<button class="pg-b" onclick="logPage++;renLog()"><i class="fas fa-chevron-right"></i></button>';ph+='<span class="pg-i">'+logPage+'/'+tp+' ('+total+'건)</span>'}document.getElementById('logPg').innerHTML=ph;
+}
+function setLT(t,el){logTab=t;document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active')});el.classList.add('active');loadLogs()}
+function setPF(f,el){pFilter=f;document.querySelectorAll('.chip').forEach(function(b){b.classList.remove('active')});el.classList.add('active');logPage=1;renLog()}
+
+async function loadUsers(){
+  // 1. visit_logs 기반 방문 통계
+  var r=await sb.from('visit_logs').select('email,user_name,avatar_url');
+  var m={};(r.data||[]).forEach(function(l){
+    if(!l.email||l.email==='anonymous')return;
+    if(!m[l.email])m[l.email]={email:l.email,name:l.user_name||'',avatar:l.avatar_url||'',visits:0,posts:0};
+    m[l.email].visits++;
+    if(l.user_name&&l.user_name!=='비로그인')m[l.email].name=l.user_name;
+    if(l.avatar_url)m[l.email].avatar=l.avatar_url;
+  });
+
+  // 2. chat_logs에서도 사용자 수집 (방문 로그 없는 신규 사용자 포함)
+  var rc=await sb.from('chat_logs').select('email,user_name');
+  (rc.data||[]).forEach(function(l){
+    if(!l.email||l.email==='anonymous')return;
+    if(!m[l.email])m[l.email]={email:l.email,name:l.user_name||'',avatar:'',visits:0,posts:0};
+    if(l.user_name&&l.user_name!=='비로그인')m[l.email].name=l.user_name;
+  });
+
+  // 3. posts에서도 사용자 수집 (게시글 작성자 중 방문로그 없는 경우)
+  var rp=await sb.from('posts').select('author_email,author');
+  (rp.data||[]).forEach(function(p){
+    if(!p.author_email)return;
+    if(!m[p.author_email])m[p.author_email]={email:p.author_email,name:p.author||'',avatar:'',visits:0,posts:0};
+    m[p.author_email].posts++;
+  });
+
+  // 4. 차단 목록
+  var rb=await sb.from('blocked_users').select('email');
+  var bl=new Set((rb.data||[]).map(function(x){return x.email}));
+
+  allUsers=Object.values(m).sort(function(a,b){return b.visits-a.visits});
+  allUsers.forEach(function(u){u._blocked=bl.has(u.email);u._admin=u.email===ADM});
+  userPage=1;renUsers();
+}
+function renUsers(){
+  var total=allUsers.length,tp=Math.max(1,Math.ceil(total/userPPG)),s=(userPage-1)*userPPG,pg=allUsers.slice(s,s+userPPG);
+  var b=document.getElementById('userB');
+  if(!pg.length){b.innerHTML='<tr><td colspan="7" style="text-align:center;color:#999;padding:20px">사용자 없음</td></tr>';document.getElementById('userPg').innerHTML='';return}
+  var h='';pg.forEach(function(u){
+    h+='<tr><td>'+(u.avatar?'<img class="avatar-sm" src="'+u.avatar+'">':'<i class="fas fa-user-circle" style="font-size:24px;color:#cbd5e1"></i>')+'</td>';
+    h+='<td>'+esc(u.name)+'</td><td style="color:var(--navy-300)">'+esc(u.email)+'</td><td><strong>'+u.visits+'</strong></td><td>'+u.posts+'</td>';
+    h+='<td>'+(u._admin?'<span class="badge badge-admin"><i class="fas fa-shield-alt"></i> 관리자</span>':u._blocked?'<span class="badge badge-blocked"><i class="fas fa-ban"></i> 차단</span>':'<span class="badge badge-member">일반</span>')+'</td>';
+    h+='<td>'+(u._admin?'':u._blocked?'<button class="btn-sm success" onclick="unblock(\''+esc(u.email)+'\')"><i class="fas fa-unlock"></i> 해제</button>':'<button class="btn-sm danger" onclick="blockU(\''+esc(u.email)+'\',\''+esc(u.name)+'\')"><i class="fas fa-ban"></i> 차단</button>')+'</td></tr>'});
+  b.innerHTML=h;
+  var ph='';if(tp>1){if(userPage>1)ph+='<button class="pg-b" onclick="userPage--;renUsers()"><i class="fas fa-chevron-left"></i></button>';var st=Math.max(1,userPage-2),en=Math.min(tp,userPage+2);for(var i=st;i<=en;i++)ph+='<button class="pg-b'+(i===userPage?' active':'')+'" onclick="userPage='+i+';renUsers()">'+i+'</button>';if(userPage<tp)ph+='<button class="pg-b" onclick="userPage++;renUsers()"><i class="fas fa-chevron-right"></i></button>';ph+='<span class="pg-i">'+userPage+'/'+tp+' ('+total+'명)</span>'}document.getElementById('userPg').innerHTML=ph;
+}
+
+var allChat=[],chatPPG=10,chatPage=1,chatTab='today';
+
+async function loadChat(){
+  var q=sb.from('chat_logs').select('*').order('created_at',{ascending:false}).limit(500);
+  var td=new Date().toISOString().slice(0,10);
+  if(chatTab==='today')q=q.gte('created_at',td+'T00:00:00');
+  else if(chatTab==='week'){var d=new Date();d.setDate(d.getDate()-7);q=q.gte('created_at',d.toISOString())}
+  var r=await q;
+  if(r.error){console.warn('chat_logs error:',r.error.message);allChat=[];chatPage=1;renChat();return;}
+  allChat=r.data||[];chatPage=1;renChat();
+}
+function renChat(){
+  var total=allChat.length,tp=Math.max(1,Math.ceil(total/chatPPG)),s=(chatPage-1)*chatPPG,pg=allChat.slice(s,s+chatPPG);
+  var b=document.getElementById('chatB');
+  if(!pg.length){b.innerHTML='<tr><td colspan="5" style="text-align:center;color:#999;padding:20px">기록 없음</td></tr>';document.getElementById('chatPg').innerHTML='';return}
+  var h='';pg.forEach(function(l){
+    var d=new Date(l.created_at);
+    var q=(l.question||'').slice(0,40)+(l.question&&l.question.length>40?'…':'');
+    h+='<tr><td>'+d.toLocaleDateString('ko')+' '+d.toLocaleTimeString('ko',{hour:'2-digit',minute:'2-digit'})+'</td>';
+    h+='<td>'+esc(l.user_name||'-')+'</td>';
+    h+='<td style="color:var(--navy-300);font-size:11px">'+esc(l.email||'')+'</td>';
+    h+='<td style="color:var(--navy-400)">'+esc(q)+'</td>';
+    h+='<td style="color:var(--navy-300)">'+((l.tokens_used||0).toLocaleString())+'</td></tr>';
+  });b.innerHTML=h;
+  var ph='';if(tp>1){if(chatPage>1)ph+='<button class="pg-b" onclick="chatPage--;renChat()"><i class="fas fa-chevron-left"></i></button>';var st=Math.max(1,chatPage-2),en=Math.min(tp,chatPage+2);for(var i=st;i<=en;i++)ph+='<button class="pg-b'+(i===chatPage?' active':'')+'" onclick="chatPage='+i+';renChat()">'+i+'</button>';if(chatPage<tp)ph+='<button class="pg-b" onclick="chatPage++;renChat()"><i class="fas fa-chevron-right"></i></button>';ph+='<span class="pg-i">'+chatPage+'/'+tp+' ('+total+'건)</span>'}document.getElementById('chatPg').innerHTML=ph;
+}
+function setCT(t,el){chatTab=t;document.querySelectorAll('.chat-tab-btn').forEach(function(b){b.classList.remove('active')});el.classList.add('active');loadChat()}
+
+async function loadBlocked(){
+  var r=await sb.from('blocked_users').select('*').order('blocked_at',{ascending:false});
+  allBlocked=r.data||[];blkPage=1;renBlocked();
+}
+function renBlocked(){
+  var total=allBlocked.length,b=document.getElementById('blockB'),e=document.getElementById('blockE'),pgEl=document.getElementById('blkPg');
+  if(!total){b.innerHTML='';e.style.display='block';pgEl.innerHTML='';return}e.style.display='none';
+  var tp=Math.max(1,Math.ceil(total/blkPPG)),s=(blkPage-1)*blkPPG,pg=allBlocked.slice(s,s+blkPPG);
+  var h='';pg.forEach(function(x){h+='<tr><td>'+esc(x.email)+'</td><td>'+esc(x.user_name||'')+'</td><td>'+new Date(x.blocked_at).toLocaleDateString('ko')+'</td><td>'+esc(x.reason||'-')+'</td><td><button class="btn-sm success" onclick="unblock(\''+esc(x.email)+'\')"><i class="fas fa-unlock"></i> 해제</button></td></tr>'});b.innerHTML=h;
+  var ph='';if(tp>1){if(blkPage>1)ph+='<button class="pg-b" onclick="blkPage--;renBlocked()"><i class="fas fa-chevron-left"></i></button>';var st=Math.max(1,blkPage-2),en=Math.min(tp,blkPage+2);for(var i=st;i<=en;i++)ph+='<button class="pg-b'+(i===blkPage?' active':'')+'" onclick="blkPage='+i+';renBlocked()">'+i+'</button>';if(blkPage<tp)ph+='<button class="pg-b" onclick="blkPage++;renBlocked()"><i class="fas fa-chevron-right"></i></button>';ph+='<span class="pg-i">'+blkPage+'/'+tp+' ('+total+'명)</span>'}pgEl.innerHTML=ph;
+}
+
+async function blockU(email,name){var reason=prompt(name+' 차단 사유:','관리자 판단');if(reason===null)return;await sb.from('blocked_users').upsert({email:email,user_name:name,reason:reason,blocked_at:new Date().toISOString()},{onConflict:'email'});alert('차단 완료');loadAll()}
+async function unblock(email){if(!confirm(email+' 차단 해제?'))return;await sb.from('blocked_users').delete().eq('email',email);alert('해제됨');loadAll()}
+function esc(t){var d=document.createElement('div');d.appendChild(document.createTextNode(t||''));return d.innerHTML}
+</script>
+</body>
+</html>
